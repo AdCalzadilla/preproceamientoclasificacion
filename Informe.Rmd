@@ -27,7 +27,7 @@ library(dplyr)
 library(pROC)
 
 # Cargando el Environment
-load("myData.RData")
+load("myData_2.RData")
 
 # Exportación del dataset
 # accident.train <- read.csv2("./datos/accidentes-kaggle.csv",sep = ",", header = T)
@@ -573,7 +573,7 @@ Se puede observar que los modelos con mejor resultados son:
 * *rf.model.29M.var*
 * *rf.model.30MZCA*
 
-Ambos con un error del 17.05. El modelos *rf.model30MZ* es una décima peor, pero a su vez es el que mejor resultados da en kaggle.
+Ambos con un error del 17.05. El modelo *rf.model30MZ* es una décima peor, pero a su vez es el que mejor resultados da en kaggle.
 
 ## Kaggle
 
