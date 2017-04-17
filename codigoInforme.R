@@ -70,14 +70,29 @@ full.data <- rbind(full.train, full.test)
 #################################################################################################
 # Volvemos a realizar la imputación, pero esta vez a todo el conjunto quitando la variable clase
 # perdidos.
-
+varClase <- full.data[,27] # Se guarda la clase en un vector por si hay algún problema
 #se realiza la imputacion (m = 10)
 imputados <-  mice::mice(full.data[,-27], m=10, method="pmm", maxit = 5)
 # se completa el conjunto de datos con las imputaciones
 datosImputados <-  mice::complete(imputados)
-full.data[,1:28] <- datosImputados
+full.data[,1:26] <- datosImputados
+# Se vuelve a partir en train y test el dataset
+full.train <- full.data[1:30002,]
+full.test <- full.data[30003:nrow(full.data),]
 
 ## Importancia de las variables usando randomForest
+# Esta partición se hace para coger solamente 1000 instancias para probar la importancia de las variables
+# y que no lleve mucho tiempo.
+
+# se fija la semilla para el generador de numeros aleatorios para que el experimento sea reproducible
+set.seed(1748528)
+# se genera un vector con tantos indices como instancias haya en el conjunto de datos
+index <- seq(1,nrow(full.train), by=1)
+# Se utiliza solo el 10% para calcular la importancia de las variables 
+trainIndex <- caret::createDataPartition(index , p=0.034, list= FALSE)
+# Seleccionar los conjuntos de datos
+trainData <- full.train[trainIndex,]
+
 # Sacado del fichero caret-randomForest.R
 set.seed(74749572)
 # define el control usando la funcion de seleccion mediante random forest
@@ -120,6 +135,7 @@ sub.full.data <- full.data[,conjVariables]
 sub.full.data$TIPO_ACCIDENTE <- full.data$TIPO_ACCIDENTE
 ## Se selecciona el dataset para entrenar
 trainData <- sub.full.data[1:30002,]
+full.final.test <- sub.full.data[30003:nrow(sub.full.data),]
 
 ## MODELOS
 
@@ -133,7 +149,7 @@ varImpPlot(rf.model.29M.var)
 
 ## # ***** Random Forest *****
 # con las variables seleccionadas por este mismo algoritmo y eliminando ZONA
-rf.model.30M.Z <- randomForest::randomForest(TIPO_ACCIDENTE ~ ., data=trainData, ntree=1500)
+rf.model.30M.Z <- randomForest::randomForest(TIPO_ACCIDENTE ~ ., data=trainData, ntree=500)
 print(rf.model.30M.Z)
 rf.importancia.30M.Z <- randomForest::importance(rf.model.30M.Z)
 rf.importancia.30M.Z

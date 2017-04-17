@@ -30,10 +30,10 @@ library(pROC)
 load("myData.RData")
 
 # Exportación del dataset
-accident.train <- read.csv2("./datos/accidentes-kaggle.csv",sep = ",", header = T)
-accident.test <- read.csv2("./datos/accidentes-kaggle-test.csv", sep = ",", header = T)
-accident.test$TIPO_ACCIDENTE <- NA
-full.data <- rbind(accident.train, accident.test)
+# accident.train <- read.csv2("./datos/accidentes-kaggle.csv",sep = ",", header = T)
+# accident.test <- read.csv2("./datos/accidentes-kaggle-test.csv", sep = ",", header = T)
+# accident.test$TIPO_ACCIDENTE <- NA
+# full.data <- rbind(accident.train, accident.test)
 ```
 
 \newpage
@@ -75,7 +75,7 @@ El dataset está formada por 31 variables, siendo la variable de salida *"TIPO_A
 * ZONA
 * ZONA_AGRUPADA
 * RED_CARRETERA
-* CARRETERA 
+* CARRETERA
 * TIPO_VIA
 * TRAZADO_NO_INTERSEC
 * TIPO_INTERSEC
@@ -419,7 +419,7 @@ filterMethods <- function(vs, df){
   w.information.gain <- FSelector::information.gain(vs~., df)
   w.symetrical <-  symmetrical.uncertainty(vs~., df)
   w.oneR <- FSelector::oneR(vs~., df)
-  
+
   mat <- as.matrix(w.chi.squared)
   mat <- cbind(mat, w.gain.ratio)
   mat <- cbind(mat, w.information.gain)
@@ -442,7 +442,7 @@ A continuación se mide la correlación entre variables mediante la función *co
 ## Función para comparar la correlación existente entre dos variables
 compareItems <- function(x, y){
   mat <- matrix(data = c(matrix.all.result[x,], matrix.all.result[y,]),
-                nrow = 2, 
+                nrow = 2,
                 byrow = T,
                 dimnames = list(c(x, y), names(matrix.all.result)))
 }
@@ -488,7 +488,7 @@ Además de calcular la correlación entre variables y la importancia de estas re
 full.data$HORA <- trunc(full.data$HORA)
 ```
 
-El siguiente paso es la construcción de modelos teniendo en cuenta los resultados obtenidos a partir de los calculos de correlación y de importancia de las variables realizado. 
+El siguiente paso es la construcción de modelos teniendo en cuenta los resultados obtenidos a partir de los calculos de correlación y de importancia de las variables realizado.
 
 ## Modelos
 
@@ -568,7 +568,12 @@ varImpPlot(rf.model.30MZCA)
 
 #### Conclusiones modelos realizados
 
-Se puede observar que el modelo que mejor resultados ofrece es *rf.model30MZ*, que a su vez es el que mejor resultados da en kaggle. También se puede ver que si quitamos una variable más los resultados obtenidos empeoran.
+Se puede observar que los modelos con mejor resultados son:
+
+* *rf.model.29M.var*
+* *rf.model.30MZCA*
+
+Ambos con un error del 17.05. El modelos *rf.model30MZ* es una décima peor, pero a su vez es el que mejor resultados da en kaggle.
 
 ## Kaggle
 
@@ -613,7 +618,3 @@ Sin embargo, los modelos con un número excesivo de árboles y con más varaible
 Como puntos negativos tengo que decir que me dejé llevar por el ímpetú de la competición y sobreajusté demasido los modelos intentando mejorar la puntuación más que por realizar una buena predicción. Este hecho produzco que eligiera mal los modelos dejando 4 modelos por fuera mejores que los seleccionados.
 
 Por otro lado he aprendido a enfrentarme a un dataset. Además he conocido el funcionamiento de la herramienta kaggle y la importancia que tiene dentro de la ciencia de datos.
-
-
-
-
